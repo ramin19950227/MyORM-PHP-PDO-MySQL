@@ -59,7 +59,7 @@ abstract class ActiveRecordEntity {
      * 
      * @return array
      */
-    private function mapPropertiesToDbFormat(): array {
+    public function mapPropertiesToDbFormat(): array {
         $reflector = new \ReflectionObject($this);
         $properties = $reflector->getProperties();
 

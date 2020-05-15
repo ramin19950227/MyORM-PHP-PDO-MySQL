@@ -26,15 +26,15 @@ $byId = $user->getById(1);
 
 
 echo "<pre>";
-print_r($byId);
+print_r($byId->mapPropertiesToDbFormat());
 /**
   Результат =
 
-User Object
+Array
 (
-    [id:protected] => 1
+    [id] => 1
     [name] => Ramin
-    [password] => *********
+    [password] => salam1234
     [permissions] => 
 )
  */
