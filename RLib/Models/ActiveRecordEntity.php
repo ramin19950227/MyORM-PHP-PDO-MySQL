@@ -32,6 +32,17 @@ abstract class ActiveRecordEntity {
     }
 
     /**
+     * Метод, который будет преобразовывать строки типа authorId в author_id.
+     * Это можно сделать с помощью регулярного выражения: перед каждой заглавной буквой мы добавляем символ подчеркушки «_», а затем приводим все буквы к нижнему регистру:
+     * 
+     * @param string $source
+     * @return strings
+     */
+    private function camelCaseToUnderscore(string $source): string {
+        return strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $source));
+    }
+
+    /**
      * Метод забирает Название таблицы с метода getTableName() и название класса с static::class и составляет SQL запрос
      * Метод Возврашает все записи в базе по имени таблицы с Метода(getTableName()) Наследника
      * 
