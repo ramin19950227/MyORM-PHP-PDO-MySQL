@@ -10,10 +10,57 @@ spl_autoload_register(function (string $className) {
 });
 
 //use в этой стате описано что это и счем едят))) -> https://webshake.ru/oop-v-php-prodvinutyj-kurs/namespace-i-avtozagruzka-klassov-v-php
-use RLib\Services\Db;
+use RLib\Models\ActiveRecordEntity;
 
-$db = Db::getInstance();
-$query = $db->query("select * from client");
+class User extends ActiveRecordEntity {
+
+    protected static function getTableName(): string {
+        return "users";
+    }
+
+}
+
+//Проверяем класс ентити
+$user = new User();
+$findAll = $user->findAll();
+
 
 echo "<pre>";
-print_r($query);
+//print_r($findAll);
+/**
+  Результат =
+
+  Array
+  (
+  [0] => User Object
+  (
+  [id:protected] => 1
+  [name] => Ramin
+  [password] => *********
+  [permissions] =>
+  )
+  )
+
+
+
+ */
+foreach ($findAll as $value) {
+    echo "<br>";
+    echo $value->getId();
+}
+/**
+  Результат =
+1
+2
+3
+4
+5
+6
+7
+8
+9
+14
+16
+17
+ */
+
