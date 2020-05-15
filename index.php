@@ -10,7 +10,7 @@ spl_autoload_register(function (string $className) {
 });
 
 //use в этой стате описано что это и счем едят))) -> https://webshake.ru/oop-v-php-prodvinutyj-kurs/namespace-i-avtozagruzka-klassov-v-php
-use Services\Db;
+use RLib\Services\Db;
 
 $db = Db::getInstance();
 $query = $db->query("select * from client");

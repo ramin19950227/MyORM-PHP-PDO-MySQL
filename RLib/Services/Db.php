@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace RLib\Services;
 
 /**
  * Паттерн Singleton в PHP
@@ -16,7 +16,7 @@ class Db {
     private $pdo;
 
     private function __construct() {
-        $dbOptions = (require __DIR__ . '/../settings.php')['db'];
+        $dbOptions = (require __DIR__ . '/db.settings.php')['db'];
 
         $this->pdo = new \PDO(
                 'mysql:host=' . $dbOptions['host'] . ';dbname=' . $dbOptions['dbname'],

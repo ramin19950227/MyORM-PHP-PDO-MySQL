@@ -1,8 +1,8 @@
 <?php
 
-namespace Models;
+namespace RLib\Models;
 
-use Services\Db;
+use RLib\Services\Db;
 
 abstract class ActiveRecordEntity {
     //добавили protected-свойство ->id и public-геттер для него – у всех наших сущностей будет id, и нет необходимости писать это каждый раз в каждой сущности – можно просто унаследовать;
