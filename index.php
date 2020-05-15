@@ -22,45 +22,19 @@ class User extends ActiveRecordEntity {
 
 //Проверяем класс ентити
 $user = new User();
-$findAll = $user->findAll();
+$byId = $user->getById(1);
 
 
 echo "<pre>";
-//print_r($findAll);
+print_r($byId);
 /**
   Результат =
 
-  Array
-  (
-  [0] => User Object
-  (
-  [id:protected] => 1
-  [name] => Ramin
-  [password] => *********
-  [permissions] =>
-  )
-  )
-
-
-
+User Object
+(
+    [id:protected] => 1
+    [name] => Ramin
+    [password] => *********
+    [permissions] => 
+)
  */
-foreach ($findAll as $value) {
-    echo "<br>";
-    echo $value->getId();
-}
-/**
-  Результат =
-1
-2
-3
-4
-5
-6
-7
-8
-9
-14
-16
-17
- */
-
