@@ -43,6 +43,37 @@ abstract class ActiveRecordEntity {
     }
 
     /**
+     * Метод прочитает все свойства объекта и создаст массив вида:
+     * 
+     * [
+     * 'название_свойства1' => значение свойства1,
+     * 'название_свойства2' => значение свойства2
+     * ]
+     * 
+     * Metod Obyektin butun Propertilerini oxuyur ve ashagida gosterilen massiv formasinda qaytarir
+     * 
+     * [
+     * '1_ci_properti_adi' => 1_ci_properti_dəyəri,
+     * '2_ci_properti_adi' => 1_ci_properti_dəyəri
+     * ]
+     * 
+     * @return array
+     */
+    private function mapPropertiesToDbFormat(): array {
+        $reflector = new \ReflectionObject($this);
+        $properties = $reflector->getProperties();
+
+        $mappedProperties = [];
+        foreach ($properties as $property) {
+            $propertyName = $property->getName();
+            $propertyNameAsUnderscore = $this->camelCaseToUnderscore($propertyName);
+            $mappedProperties[$propertyNameAsUnderscore] = $this->$propertyName;
+        }
+
+        return $mappedProperties;
+    }
+
+    /**
      * Метод забирает Название таблицы с метода getTableName() и название класса с static::class и составляет SQL запрос
      * Метод Возврашает все записи в базе по имени таблицы с Метода(getTableName()) Наследника
      * 
