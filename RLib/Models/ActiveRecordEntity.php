@@ -59,7 +59,7 @@ abstract class ActiveRecordEntity {
      * 
      * @return array
      */
-    public function mapPropertiesToDbFormat(): array {
+    private function mapPropertiesToDbFormat(): array {
         $reflector = new \ReflectionObject($this);
         $properties = $reflector->getProperties();
 
@@ -99,7 +99,7 @@ abstract class ActiveRecordEntity {
      * @param int $id
      * @return static|null
      */
-    public static function getById(int $id): ?self {
+    public static function getById(int $id): self {
         $db = Db::getInstance();
         $entities = $db->query(
                 'SELECT * FROM `' . static::getTableName() . '` WHERE id=:id;',
@@ -107,6 +107,74 @@ abstract class ActiveRecordEntity {
                 static::class
         );
         return $entities ? $entities[0] : null;
+    }
+
+    /**
+     * Метод save() может быть вызван как у объекта, который уже есть в базе данных, так и у нового (если мы создали его с помощью new Object и заполнили ему свойства). Для первого нам нужно будет выполнить UPDATE-запрос, а для второго - INSERT-запрос. Как понять, с каким типом объекта мы работаем? Да всё проще простого – у объекта, которому соответствует запись в базе, свойство id не равно null, а если мы только создали объект, у него свойства id ещё нет.
+     * 
+     * @return void
+     */
+    public function save(): void {
+        $mappedProperties = $this->mapPropertiesToDbFormat();
+        if ($this->id !== null) {
+            $this->update($mappedProperties);
+        } else {
+            $this->insert($mappedProperties);
+        }
+    }
+
+    private function update(array $mappedProperties): void {
+        $columns2params = [];
+        $params2values = [];
+        $index = 1;
+        foreach ($mappedProperties as $column => $value) {
+            $param = ':param' . $index; // :param1
+            $columns2params[] = $column . ' = ' . $param; // column1 = :param1
+            $params2values[$param] = $value; // [:param1 => value1]
+            $index++;
+        }
+        $sql = 'UPDATE ' . static::getTableName() . ' SET ' . implode(', ', $columns2params) . ' WHERE id = ' . $this->id;
+        $db = Db::getInstance();
+        $db->query($sql, $params2values, static::class);
+        echo "Update...";
+    }
+
+    private function insert(array $mappedProperties): void {
+        //здесь мы создаём новую запись в базе
+        //Поле id нам в запросе не нужно, так как для него будет автоматически выдано значение на уровне базы данных, 
+        //так как оно типа AUTOINCREMENT, а для поля created_at задано значение по умолчанию – CURRENT_TIMESTAMP. 
+        //Таким образом, эти поля можно вообще убрать из запроса. Для этого мы отфильтруем элементы в массиве от тех, значение которых = NULL:
+        $filteredProperties = array_filter($mappedProperties);
+
+        $columns = [];
+        $paramsNames = [];
+        $params2values = [];
+        foreach ($filteredProperties as $columnName => $value) {
+            $columns[] = '`' . $columnName . '`';
+            $paramName = ':' . $columnName;
+            $paramsNames[] = $paramName;
+            $params2values[$paramName] = $value;
+        }
+
+        $columnsViaSemicolon = implode(', ', $columns);
+        $paramsNamesViaSemicolon = implode(', ', $paramsNames);
+
+        $sql = 'INSERT INTO ' . static::getTableName() . ' (' . $columnsViaSemicolon . ') VALUES (' . $paramsNamesViaSemicolon . ');';
+
+        $db = Db::getInstance();
+        print_r($sql);
+
+        $res = $db->query($sql, $params2values, static::class);
+
+        if ($db->getLastInsertId()) {
+            $this->id = $db->getLastInsertId();
+            $this->createdAt = date('Y-m-d H:i:s');
+        } else {
+            throw new \Exception("Operation Failed, i cant execute SQL query");
+        }
+
+
+        echo "INSETING...";
     }
 
 }

@@ -3,7 +3,7 @@
 return [
     'db' => [
         'host' => 'localhost',
-        'dbname' => 'qysercvs_qaq',
+        'dbname' => 'test',
         'user' => 'root',
         'password' => '',
     ]

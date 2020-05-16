@@ -31,7 +31,7 @@ class Db {
         $result = $sth->execute($params);
 
         if (false === $result) {
-            return null;
+            return [];
         }
 
         return $sth->fetchAll(\PDO::FETCH_CLASS, $className);
@@ -50,6 +50,16 @@ class Db {
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Для того, чтобы получить id последней вставленной записи в базе (в рамках текущей сессии работы с БД) 
+     * можно использовать метод lastInsertId() у объекта PDO.
+     * 
+     * @return int
+     */
+    public function getLastInsertId(): int {
+        return (int) $this->pdo->lastInsertId();
     }
 
 }
