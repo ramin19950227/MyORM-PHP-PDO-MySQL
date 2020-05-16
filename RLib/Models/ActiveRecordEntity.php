@@ -136,7 +136,6 @@ abstract class ActiveRecordEntity {
         $sql = 'UPDATE ' . static::getTableName() . ' SET ' . implode(', ', $columns2params) . ' WHERE id = ' . $this->id;
         $db = Db::getInstance();
         $db->query($sql, $params2values, static::class);
-        echo "Update...";
     }
 
     private function insert(array $mappedProperties): void {
@@ -172,9 +171,15 @@ abstract class ActiveRecordEntity {
         } else {
             throw new \Exception("Operation Failed, i cant execute SQL query");
         }
+    }
 
-
-        echo "INSETING...";
+    public function delete(): void {
+        $db = Db::getInstance();
+        $db->query(
+                'DELETE FROM `' . static::getTableName() . '` WHERE id = :id',
+                [':id' => $this->id]
+        );
+        $this->id = null;
     }
 
 }
