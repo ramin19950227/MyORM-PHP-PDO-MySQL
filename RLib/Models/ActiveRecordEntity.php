@@ -79,7 +79,7 @@ abstract class ActiveRecordEntity {
      * 
      * @return static[]
      */
-    public static function findAll(): array {
+    public static function findAll(): ?array {
         $db = Db::getInstance();
         return $db->query('SELECT * FROM `' . static::getTableName() . '`;', [], static::class);
     }
@@ -99,7 +99,7 @@ abstract class ActiveRecordEntity {
      * @param int $id
      * @return static|null
      */
-    public static function getById(int $id): self {
+    public static function getById(int $id): ?self {
         $db = Db::getInstance();
         $entities = $db->query(
                 'SELECT * FROM `' . static::getTableName() . '` WHERE id=:id;',
